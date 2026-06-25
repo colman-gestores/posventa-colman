@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reclamos y Solicitudes — Grupo Colman</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rojo: #C0211A;
+    --rojo-osc: #8B1510;
+    --naranja: #F5820D;
+    --gris-osc: #5A5A5A;
+    --gris-med: #5A5A5A;
+    --gris-claro: #F4F4F4;
+    --borde: #E0E0E0;
+    --blanco: #FFFFFF;
+    --verde: #1DA851;
+  }
+
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--gris-claro);
+    color: var(--gris-osc);
+    min-height: 100vh;
+    padding: 0 0 40px;
+  }
+
+  /* HEADER */
+  .header {
+    background: #6B6B6B;
+    padding: 18px 24px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header__logo {
+    font-size: 20px;
+    font-weight: 800;
+    color: white;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .header__logo span { color: var(--naranja); }
+  .header__badge {
+    background: var(--rojo);
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  /* BANNER */
+  .banner {
+    background: var(--rojo);
+    padding: 12px 24px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.5px;
+  }
+  .banner strong { color: white; }
+
+  /* FORM CONTAINER */
+  .container {
+    max-width: 620px;
+    margin: 28px auto 0;
+    padding: 0 16px;
+  }
+
+  .card {
+    background: var(--blanco);
+    border-radius: 6px;
+    padding: 28px 28px;
+    margin-bottom: 16px;
+    border: 1px solid var(--borde);
+  }
+
+  .card__titulo {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--rojo);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gris-claro);
+  }
+
+  .campo {
+    margin-bottom: 18px;
+  }
+  .campo:last-child { margin-bottom: 0; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gris-osc);
+    margin-bottom: 6px;
+  }
+  label .req { color: var(--rojo); margin-left: 2px; }
+  label .hint {
+    font-weight: 400;
+    color: var(--gris-med);
+    font-size: 11px;
+    margin-left: 4px;
+  }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="date"],
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1.5px solid var(--borde);
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--gris-osc);
+    font-family: inherit;
+    background: var(--blanco);
+    transition: border-color 0.15s;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--rojo);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235A5A5A' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+    padding-right: 36px;
+  }
+
+  /* Opciones radio/check estilizadas */
+  .opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .opcion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 13px;
+    border: 1.5px solid var(--borde);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    font-size: 13.5px;
+    color: var(--gris-osc);
+    user-select: none;
+  }
+  .opcion:hover { border-color: var(--rojo); background: #fff5f5; }
+  .opcion input[type="radio"] { accent-color: var(--rojo); width: 16px; height: 16px; flex-shrink: 0; }
+  .opcion.seleccionada { border-color: var(--rojo); background: #fff0f0; }
+
+  /* FILA 2 columnas */
+  .fila-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 480px) { .fila-2 { grid-template-columns: 1fr; } }
+
+  /* BOTÓN ENVIAR */
+  .btn-enviar {
+    width: 100%;
+    background: var(--rojo);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 15px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: background 0.15s;
+    margin-top: 4px;
+  }
+  .btn-enviar:hover { background: var(--rojo-osc); }
+  .btn-enviar:active { transform: scale(0.99); }
+
+  /* PANTALLA DE ÉXITO */
+  .exito {
+    display: none;
+    max-width: 620px;
+    margin: 40px auto;
+    padding: 0 16px;
+  }
+  .exito__card {
+    background: white;
+    border-radius: 6px;
+    padding: 40px 28px;
+    text-align: center;
+    border: 1px solid var(--borde);
+  }
+  .exito__icono {
+    width: 64px;
+    height: 64px;
+    background: #e8f8ef;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 28px;
+  }
+  .exito__titulo {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gris-osc);
+    margin-bottom: 10px;
+  }
+  .exito__sub {
+    font-size: 14px;
+    color: var(--gris-med);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .exito__numero {
+    background: var(--gris-claro);
+    border-radius: 4px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--gris-med);
+    margin-bottom: 24px;
+  }
+  .exito__numero strong {
+    display: block;
+    font-size: 22px;
+    color: var(--rojo);
+    font-weight: 800;
+    margin-top: 2px;
+  }
+
+  .btn-nuevo {
+    background: var(--gris-claro);
+    color: var(--gris-osc);
+    border: 1.5px solid var(--borde);
+    border-radius: 4px;
+    padding: 11px 24px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15px;
+    font-family: inherit;
+  }
+  .btn-nuevo:hover { border-color: var(--gris-med); }
+
+  /* RESUMEN PARA WHATSAPP (oculto) */
+  #resumen-wa { display: none; }
+
+  /* ALERTA error */
+  .alerta {
+    background: #fff3f3;
+    border: 1.5px solid #f5c0c0;
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--rojo);
+    margin-bottom: 16px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header__logo">Grupo <span>Colman</span></div>
+  <div class="header__badge">Posventa</div>
+</div>
+<div class="banner">
+  <strong>Reclamos y solicitudes</strong> — Completá el formulario y posventa se va a comunicar con vos a la brevedad.
+</div>
+
+<!-- FORMULARIO -->
+<div class="container" id="formulario">
+
+  <div class="alerta" id="alerta">⚠️ Por favor completá todos los campos obligatorios antes de continuar.</div>
+
+  <!-- Bloque 1: ¿Quién hace el reclamo? -->
+  <div class="card">
+    <div class="card__titulo">¿Quién hace el reclamo?</div>
+    <div class="campo">
+      <div class="opciones" id="grupo-quien">
+        <label class="opcion" id="op-cliente">
+          <input type="radio" name="quien" value="Cliente"> 
+          👤 Soy el cliente
+        </label>
+        <label class="opcion" id="op-vendedor">
+          <input type="radio" name="quien" value="Vendedor"> 
+          🧑‍💼 Soy el vendedor (cargo el reclamo en nombre del cliente)
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bloque 2: Datos del cliente -->
+  <div class="card">
+    <div class="card__titulo">Datos del cliente</div>
+
+    <div class="fila-2">
+      <div class="campo">
+        <label>Nombre completo <span class="req">*</span></label>
+        <input type="text" id="nombre" placeholder="Ej: María González">
+      </div>
+      <div class="campo">
+        <label>Teléfono <span class="req">*</span></label>
+        <input type="tel" id="telefono" placeholder="Ej: 387 4123456">
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Vendedor asignado <span class="req">*</span></label>
+      <select id="vendedor">
+        <option value="">— Seleccioná el vendedor —</option>
+        <option>Belén Quiquinto</option>
+        <option>Leonel Aparicio</option>
+        <option>Ivana Di Pauli</option>
+        <option>Gustavo Zapana</option>
+        <option>Juan José Farfán</option>
+        <option>Exequiel Zalazar</option>
+        <option>No sé / No recuerdo</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Bloque 3: Producto y problema -->
+  <div class="card">
+    <div class="card__titulo">Producto y problema</div>
+
+    <div class="fila-2">
+      <div class="campo">
+        <label>Producto <span class="req">*</span></label>
+        <input type="text" id="producto" placeholder="Ej: Heladera Samsung 370 lts">
+      </div>
+      <div class="campo">
+        <label>Fecha de compra aprox. <span class="hint">(opcional)</span></label>
+        <input type="date" id="fecha-compra">
+      </div>
+    </div>
+
+    <div class="campo">
+      <label>Tipo de solicitud <span class="req">*</span></label>
+      <select id="tipo">
+        <option value="">— Seleccioná una opción —</option>
+        <option value="Falla técnica / Garantía">🔧 Falla técnica / Garantía</option>
+        <option value="Entrega o demora">🚚 Entrega o demora</option>
+        <option value="Cambio o devolución">🔄 Cambio o devolución</option>
+        <option value="Consulta sobre uso del producto">❓ Consulta sobre uso del producto</option>
+        <option value="Otro">📋 Otro</option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>Descripción del problema <span class="req">*</span> <span class="hint">— Cuanto más detalle, mejor</span></label>
+      <textarea id="descripcion" placeholder="Contanos qué pasó con el producto, cuándo empezó el problema, si ya intentaron solucionar algo..."></textarea>
+    </div>
+
+    <div class="campo">
+      <label>¿Tiene foto o video del problema?</label>
+      <div class="opciones">
+        <label class="opcion">
+          <input type="radio" name="media" value="Lo manda por WhatsApp"> 📱 Lo mando por WhatsApp cuando me contacten
+        </label>
+        <label class="opcion">
+          <input type="radio" name="media" value="No tiene"> ❌ No tengo
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <button class="btn-enviar" onclick="enviarReclamo()">Enviar reclamo →</button>
+
+</div>
+
+<!-- PANTALLA DE ÉXITO -->
+<div class="exito" id="exito">
+  <div class="exito__card">
+    <div class="exito__icono">✅</div>
+    <div class="exito__titulo">¡Reclamo recibido!</div>
+    <div class="exito__sub">
+      El equipo de posventa de Grupo Colman ya fue notificado.<br>
+      Te van a contactar a la brevedad al número que indicaste.
+    </div>
+    <div class="exito__numero">
+      Número de reclamo
+      <strong id="num-reclamo">—</strong>
+    </div>
+    <button class="btn-nuevo" onclick="nuevoReclamo()">Cargar otro reclamo</button>
+  </div>
+</div>
+
+<script>
+  // ── Resaltar opción seleccionada ──
+  document.querySelectorAll('.opciones').forEach(grupo => {
+    grupo.querySelectorAll('input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        grupo.querySelectorAll('.opcion').forEach(op => op.classList.remove('seleccionada'));
+        radio.closest('.opcion').classList.add('seleccionada');
+      });
+    });
+  });
+
+  // ── Generar número de reclamo ──
+  function generarNumero() {
+    const ahora = new Date();
+    const d = String(ahora.getDate()).padStart(2,'0');
+    const m = String(ahora.getMonth()+1).padStart(2,'0');
+    const y = String(ahora.getFullYear()).slice(-2);
+    const rand = String(Math.floor(Math.random()*900)+100);
+    return `REC-${d}${m}${y}-${rand}`;
+  }
+
+  // ── Formatear fecha legible ──
+  function fechaHoy() {
+    const d = new Date();
+    const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    return `${dias[d.getDay()]} ${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()} — ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  }
+
+  // ── Validar ──
+  function validar() {
+    const campos = [
+      { id: 'nombre', label: 'Nombre' },
+      { id: 'telefono', label: 'Teléfono' },
+      { id: 'vendedor', label: 'Vendedor' },
+      { id: 'producto', label: 'Producto' },
+      { id: 'tipo', label: 'Tipo de solicitud' },
+      { id: 'descripcion', label: 'Descripción' },
+    ];
+    for (const c of campos) {
+      const el = document.getElementById(c.id);
+      if (!el.value.trim()) {
+        el.focus();
+        el.style.borderColor = '#C0211A';
+        setTimeout(() => el.style.borderColor = '', 2000);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // ── ENVIAR ──
+  function enviarReclamo() {
+    const alerta = document.getElementById('alerta');
+    alerta.style.display = 'none';
+
+    if (!validar()) {
+      alerta.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const quien       = document.querySelector('input[name="quien"]:checked')?.value || 'No indicado';
+    const nombre      = document.getElementById('nombre').value.trim();
+    const telefono    = document.getElementById('telefono').value.trim();
+    const vendedor    = document.getElementById('vendedor').value;
+    const producto    = document.getElementById('producto').value.trim();
+    const fechaCompra = document.getElementById('fecha-compra').value || 'No indicada';
+    const tipo        = document.getElementById('tipo').value;
+    const descripcion = document.getElementById('descripcion').value.trim();
+    const media       = document.querySelector('input[name="media"]:checked')?.value || 'No indicado';
+    const nro         = generarNumero();
+    const fecha       = fechaHoy();
+
+    // ── Armar mensaje WhatsApp para posventa ──
+    // IMPORTANTE: reemplazá el número de abajo con el número real de posventa (sin + ni espacios)
+    const NUMERO_POSVENTA = '5493875697489';
+
+    const msg = [
+      `🔔 *NUEVO RECLAMO — GRUPO COLMAN*`,
+      ``,
+      `📋 *Nro:* ${nro}`,
+      `📅 *Fecha:* ${fecha}`,
+      ``,
+      `👤 *Quién carga:* ${quien}`,
+      ``,
+      `━━━━━━━━━━━━━━━━━━`,
+      `*DATOS DEL CLIENTE*`,
+      `━━━━━━━━━━━━━━━━━━`,
+      `• Nombre: ${nombre}`,
+      `• Teléfono: ${telefono}`,
+      `• Vendedor: ${vendedor}`,
+      ``,
+      `━━━━━━━━━━━━━━━━━━`,
+      `*PRODUCTO Y PROBLEMA*`,
+      `━━━━━━━━━━━━━━━━━━`,
+      `• Producto: ${producto}`,
+      `• Fecha de compra: ${fechaCompra}`,
+      `• Tipo: ${tipo}`,
+      `• Foto/video: ${media}`,
+      ``,
+      `📝 *Descripción:*`,
+      descripcion,
+      ``,
+      `━━━━━━━━━━━━━━━━━━`,
+      `_Este reclamo fue generado automáticamente por el sistema de posventa Grupo Colman._`,
+    ].join('\n');
+
+    const urlWA = `https://wa.me/${NUMERO_POSVENTA}?text=${encodeURIComponent(msg)}`;
+
+    // ── Guardar en Google Sheets via iframe trick ──
+    const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw2ykH9MeHH8YSd13vUUIR3AdHu5NfsU3wt6Q0aTRW2QLgsdWNEJqcxrqWE9o3l1M2V/exec';
+    const params = new URLSearchParams({
+      nro, fecha, quien, nombre, telefono, vendedor,
+      producto, fechaCompra, tipo, descripcion, media
+    });
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = SHEETS_URL + '?' + params.toString();
+    document.body.appendChild(iframe);
+    setTimeout(() => iframe.remove(), 5000);
+
+    // Guardar número para pantalla de éxito
+    document.getElementById('num-reclamo').textContent = nro;
+
+    // Mostrar éxito
+    document.getElementById('formulario').style.display = 'none';
+    document.getElementById('exito').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Abrir WhatsApp con el mensaje armado (se abre en nueva pestaña)
+    setTimeout(() => {
+      window.open(urlWA, '_blank');
+    }, 600);
+  }
+
+  function nuevoReclamo() {
+    // Limpiar formulario
+    document.querySelectorAll('input[type="text"], input[type="tel"], input[type="date"], textarea').forEach(el => el.value = '');
+    document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+    document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+    document.querySelectorAll('.opcion').forEach(el => el.classList.remove('seleccionada'));
+
+    document.getElementById('formulario').style.display = 'block';
+    document.getElementById('exito').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
